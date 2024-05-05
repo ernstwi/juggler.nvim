@@ -14,11 +14,14 @@ local function join(t, s)
   return res
 end
 
-function M.draw(buffers)
+function M.draw(buffers, opts)
   local chunks = util.map(buffers, function(buf)
-    return { buf.name, buf.selected and "Underlined" or "None" }
+    return {
+      buf.name,
+      buf.selected and opts.highlight_group_active or opts.highlight_group_inactive,
+    }
   end)
-  local res = join(chunks, { " | ", "None" })
+  local res = join(chunks, { " | ", opts.highlight_group_separator })
   vim.api.nvim_echo(res, false, {})
 end
 

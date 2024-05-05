@@ -1,4 +1,5 @@
 local Hydra = require("hydra")
+
 local buffers = require("juggler.buffers")
 local ui = require("juggler.ui")
 local util = require("juggler.util")
@@ -12,6 +13,9 @@ function M.setup(opts)
 
   local defaults = {
     keys = "asdfghjkl",
+    highlight_group_active = "Question",
+    highlight_group_inactive = "None",
+    highlight_group_separator = "Whitespace",
   }
 
   for key, value in pairs(defaults) do
@@ -42,7 +46,7 @@ function M.setup(opts)
 
         -- New buffer selected, redraw
         if prev ~= new then
-          ui.draw(buffers.get())
+          ui.draw(buffers.get(), opts)
           return
         end
 
@@ -60,7 +64,7 @@ function M.setup(opts)
       invoke_on_body = true,
       on_enter = function()
         buffers.setup()
-        ui.draw(buffers.get())
+        ui.draw(buffers.get(), opts)
       end,
     },
     heads = heads,
