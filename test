@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+LUA_PATH=";./lua/?.lua;;" lua lua/juggler/*_test.lua
