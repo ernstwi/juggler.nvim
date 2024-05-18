@@ -2,6 +2,11 @@
 
 Reimplementation of [LustyJuggler](https://www.vim.org/scripts/script.php?script_id=2050) for Neovim.
 
+## Todo
+
+- Scrolling
+- Differentiation of files with same basename
+
 ## Usage
 
 1. Press `<leader>j` to display the most recently used buffers in the cmdline bar. Each buffer is mapped to a key on the home row.
