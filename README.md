@@ -42,6 +42,7 @@ Default `opts`:
   -- Highlight groups used for the cmdline UI.
   highlight_group_active = "Question",      -- The selected buffer.
   highlight_group_inactive = "None",        -- All other buffers.
-  highlight_group_separator = "Whitespace", -- The `|` between buffers.
+  highlight_group_separator = "Whitespace", -- The `|` between buffers. Also used for the
+                                            -- line cutoff indicator `>`.
 }
 ```
