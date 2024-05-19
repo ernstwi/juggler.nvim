@@ -1,26 +1,31 @@
 local ui = require("juggler.ui")
 local util = require("juggler.util")
 
-local function test_join(filenames, separator, max_width, expected)
-  local in_groups = util.map(filenames, function(filename)
-    return { filename, "hl" }
+local function test(filenames, separator, max_width, expected)
+  local buffers = util.map(filenames, function(filename)
+    return {
+      id = 0,
+      name = filename,
+      lastused = 0,
+      selected = false,
+    }
   end)
 
-  local res_groups = ui.join(in_groups, { separator, "hl" }, max_width)
+  local chars = ui.compile(buffers, { separator = separator }, max_width)
 
-  local res_text = table.concat(util.map(res_groups, function(group)
-    return group[1]
+  local text = table.concat(util.map(chars, function(c)
+    return c.c
   end))
 
-  assert(res_text == expected, "expected " .. expected .. ", got " .. res_text)
+  assert(text == expected, "expected " .. expected .. ", got " .. text)
 end
 
-test_join({ "1234", "6789" }, "|", 0, "")
-test_join({ "1234", "6789" }, "|", 1, ">")
-test_join({ "1234", "6789" }, "|", 2, "1>")
-test_join({ "1234", "6789" }, "|", 5, "1234>")
-test_join({ "1234", "6789" }, "|", 6, "1234|>")
-test_join({ "1234", "6789" }, "|", 7, "1234|6>")
-test_join({ "1234", "6789" }, "|", 9, "1234|6789")
+test({ "1234", "6789" }, "|", 0, "")
+test({ "1234", "6789" }, "|", 1, ">")
+test({ "1234", "6789" }, "|", 2, "1>")
+test({ "1234", "6789" }, "|", 5, "1234>")
+test({ "1234", "6789" }, "|", 6, "1234|>")
+test({ "1234", "6789" }, "|", 7, "1234|6>")
+test({ "1234", "6789" }, "|", 9, "1234|6789")
 
 print("ui tests passed")

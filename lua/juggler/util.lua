@@ -1,8 +1,8 @@
 local M = {}
 
--- Split a string into a table of characters
+-- Split a string into an array of characters
 ---@param s string
----@return table
+---@return string[]
 function M.split(s)
   local chars = {}
   for i = 1, #s do

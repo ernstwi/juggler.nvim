@@ -1,52 +1,49 @@
 local util = require("juggler.util")
-local c = require("juggler.chunks")
+
+---@class StyledChar
+---@field c string
+---@field hl string
 
 local M = {}
 
----@param chunks chunk[]
----@param separator chunk
----@param max_width integer
----@return chunk
-function M.join(chunks, separator, max_width, cutoff_highlight)
-  if max_width == 0 then
-    return {}
-  end
-
-  -- Insert separator between each chunk
-  local res = {}
-  for i, chunk in ipairs(chunks) do
-    table.insert(res, chunk)
-    if i < #chunks then
-      table.insert(res, separator)
+---@return StyledChar[]
+---@param buffers Buffer[]
+---@param opts Options
+function M.compile(buffers, opts, max_width)
+  local cs = {} ---@type StyledChar[]
+  for i, buf in ipairs(buffers) do
+    for _, c in ipairs(util.split(buf.name)) do
+      table.insert(cs, {
+        c = c,
+        hl = buf.selected and opts.highlight_group_active or opts.highlight_group_inactive,
+      })
+    end
+    if i < #buffers then
+      table.insert(cs, { c = "|", hl = opts.highlight_group_separator })
     end
   end
 
-  if #c.text(res) <= max_width then
-    return res
+  if #cs <= max_width then
+    return cs
   end
 
-  while #c.text(res) > max_width do
-    c.shorten(res)
+  while #cs > max_width do
+    table.remove(cs) -- Remove last element
   end
 
-  -- Replace the last character of the last chunk with a ">"
-  local last = res[#res]
-  last[1] = string.sub(last[1], 1, #last[1] - 1)
-  table.insert(res, { ">", cutoff_highlight })
+  -- Replace the last character with a ">"
+  cs[#cs] = { c = ">", hl = opts.highlight_group_separator }
 
-  return res
+  return cs
 end
 
-function M.draw(buffers, opts)
-  local chunks = util.map(buffers, function(buf)
-    return {
-      buf.name,
-      buf.selected and opts.highlight_group_active or opts.highlight_group_inactive,
-    }
+function M.render(buffers, opts)
+  local max_width = vim.o.columns - 1
+  local cs = M.compile(buffers, opts, max_width)
+  local tuples = util.map(cs, function(c)
+    return { c.c, c.hl }
   end)
-  local res =
-    M.join(chunks, { " | ", opts.highlight_group_separator }, vim.o.columns - 1, opts.highlight_group_separator)
-  vim.api.nvim_echo(res, false, {})
+  vim.api.nvim_echo(tuples, false, {})
 end
 
 return M

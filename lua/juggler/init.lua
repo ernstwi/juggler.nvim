@@ -4,10 +4,17 @@ local buffers = require("juggler.buffers")
 local ui = require("juggler.ui")
 local util = require("juggler.util")
 
+---@class Options
+---@field keys string
+---@field highlight_group_active string
+---@field highlight_group_inactive string
+---@field highlight_group_separator string
+
 local M = {}
 
 local hydra
 
+---@param opts Options
 function M.setup(opts)
   opts = opts or {}
 
@@ -46,7 +53,7 @@ function M.setup(opts)
 
         -- New buffer selected, redraw
         if prev ~= new then
-          ui.draw(buffers.get(), opts)
+          ui.render(buffers.get(), opts)
           return
         end
 
@@ -64,7 +71,7 @@ function M.setup(opts)
       invoke_on_body = true,
       on_enter = function()
         buffers.setup()
-        ui.draw(buffers.get(), opts)
+        ui.render(buffers.get(), opts)
       end,
     },
     heads = heads,

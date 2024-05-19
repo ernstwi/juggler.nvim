@@ -1,7 +1,14 @@
 local util = require("juggler.util")
 
+---@class (exact) Buffer
+---@field id number
+---@field name string
+---@field lastused number
+---@field selected boolean
+
 local M = {}
 
+---@type Buffer[]
 local state = {}
 
 function M.setup()
@@ -18,7 +25,8 @@ function M.setup()
     -- Filter out unlisted buffers
     return vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted
   end)
-  local recent_buffers = {}
+
+  local recent_buffers = {} ---@type Buffer[]
 
   for _, buf in ipairs(buffers) do
     local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t")
