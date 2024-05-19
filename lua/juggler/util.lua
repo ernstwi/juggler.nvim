@@ -33,4 +33,14 @@ function M.filter(t, condition)
   return res
 end
 
+---@param t table
+---@return table
+function M.slice(t, start, stop)
+  local result = {}
+  for i = start, stop do
+    table.insert(result, t[i])
+  end
+  return result
+end
+
 return M

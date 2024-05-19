@@ -27,14 +27,54 @@ function M.compile(buffers, opts, max_width)
     return cs
   end
 
-  while #cs > max_width do
-    table.remove(cs) -- Remove last element
+  -- Fit to max width
+
+  -- Make sublists for left and right of the selected buffer
+  local left = {} ---@type StyledChar[]
+  local selection = {} ---@type StyledChar[]
+  local right = {} ---@type StyledChar[]
+  local current = left
+  for _, c in ipairs(cs) do
+    if c.hl == opts.highlight_group_active then
+      current = right -- Switch to right
+      table.insert(selection, c)
+    else
+      table.insert(current, c)
+    end
   end
 
-  -- Replace the last character with a ">"
-  cs[#cs] = { c = ">", hl = opts.highlight_group_separator }
+  if #selection == 0 then
+    left = {}
+    selection = { cs[1] }
+    right = util.slice(cs, 2, #cs + 1)
+  end
 
-  return cs
+  -- Pad selection to the left and right
+  local res = selection
+  local add_right = true
+  while #res < max_width do
+    if add_right then
+      add_right = false
+      if #right > 0 then
+        table.insert(res, #res + 1, table.remove(right, 1))
+      end
+    else
+      add_right = true
+      if #left > 0 then
+        table.insert(res, 1, table.remove(left))
+      end
+    end
+  end
+
+  -- If there are left over characters, add "<", ">" to endings
+  if #left > 0 then
+    res[1] = { c = "<", hl = opts.highlight_group_separator }
+  end
+  if #right > 0 then
+    res[#res] = { c = ">", hl = opts.highlight_group_separator }
+  end
+
+  return res
 end
 
 function M.render(buffers, opts)

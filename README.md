@@ -4,7 +4,6 @@ Reimplementation of [LustyJuggler](https://www.vim.org/scripts/script.php?script
 
 ## Todo
 
-- Scrolling
 - Differentiation of files with same basename
 
 ## Usage
