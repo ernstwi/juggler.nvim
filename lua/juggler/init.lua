@@ -32,7 +32,11 @@ function M.setup(opts)
   end
 
   -- Setup autocmd
+  local augroup = vim.api.nvim_create_augroup("Juggler", {
+    clear = false,
+  })
   vim.api.nvim_create_autocmd({ "BufEnter" }, {
+    group = augroup,
     callback = function()
       local current_buf = vim.api.nvim_get_current_buf()
       vim.api.nvim_buf_set_var(current_buf, "lastused", vim.loop.now())
