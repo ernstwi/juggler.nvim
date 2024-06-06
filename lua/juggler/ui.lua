@@ -78,7 +78,7 @@ function M.compile(buffers, opts, max_width)
 end
 
 function M.render(buffers, opts)
-  local max_width = vim.o.columns - 2
+  local max_width = vim.o.columns - 1
   local cs = M.compile(buffers, opts, max_width)
   local tuples = util.map(cs, function(c)
     return { c.c, c.hl }
